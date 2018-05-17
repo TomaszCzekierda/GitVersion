@@ -258,7 +258,8 @@ namespace GitVersion
             if (format.StartsWith("lp", StringComparison.Ordinal))
             {
                 // handle the padding
-                return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString(format)) : ToString("j");
+                //return PreReleaseTag.HasTag() ? string.Format("{0}-{1}", ToString("j"), PreReleaseTag.ToString(format)) : ToString("j");
+                return ToString("x");
             }
 
             switch (format)
@@ -283,6 +284,24 @@ namespace GitVersion
 
                         return !string.IsNullOrEmpty(buildMetadata) ? string.Format("{0}+{1}", ToString("s"), buildMetadata) : ToString("s");
                     }
+                case "x":
+                {
+
+                    var versionString = ToString("j");
+                    if (PreReleaseTag.HasTag())
+                    {
+                        var commits = BuildMetaData.CommitsSinceTag;
+                        var commitsZeroPadded = commits.Value.ToString();
+                        var branchName = PreReleaseTag.Name;
+                        if (PreReleaseTag.Name.Contains("rc"))
+                        {
+                                branchName = "rc";
+                        }
+                        versionString += "-" + branchName + commitsZeroPadded.PadLeft(4, '0');
+                    }
+
+                    return versionString;
+                }
                 default:
                     throw new ArgumentException(string.Format("Unrecognised format '{0}'", format), "format");
             }

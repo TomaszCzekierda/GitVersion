@@ -80,7 +80,7 @@
 
         public string LegacySemVerPadded
         {
-            get { return _semver.ToString("lp" + _config.LegacySemVerPadding); }
+            get { return _semver.ToString("x"); }
         }
 
         public string AssemblySemVer
